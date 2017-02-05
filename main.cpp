@@ -2,8 +2,8 @@
 
 #include "includes/guiFunctions.h"
 
-#define WINDOW_HEIGHT 500
-#define WINDOW_WIDTH  350
+#define WINDOW_HEIGHT 720
+#define WINDOW_WIDTH  1280
 
 int main()
 {
@@ -12,7 +12,7 @@ int main()
 
     int running = 1;
 
-	windowInitialization(&wi, "Cl", WINDOW_WIDTH, WINDOW_HEIGHT);
+	windowInitialization(&wi, "Client", WINDOW_WIDTH, WINDOW_HEIGHT);
 	ctx = ctxInitialization(&wi, WINDOW_WIDTH, WINDOW_HEIGHT);
 	loadDefaultFont(&wi);
 
@@ -31,23 +31,12 @@ int main()
         nk_input_end(ctx);
 
         /* GUI */
-        if (nk_begin(ctx, "Demo", nk_rect(50, 50, 210, 250),
-            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
-            NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
-        {
-            enum {EASY, HARD};
-            static int op = EASY;
-            static int property = 20;
+        if (nk_begin(ctx, "Stream", nk_rect(0, 0, WINDOW_WIDTH - 300, WINDOW_HEIGHT), NK_WINDOW_TITLE))
+        {}
+        nk_end(ctx);
 
-            nk_layout_row_static(ctx, 30, 80, 1);
-            if (nk_button_label(ctx, "button"))
-                fprintf(stdout, "button pressed\n");
-            nk_layout_row_dynamic(ctx, 30, 2);
-            if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
-            if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
-            nk_layout_row_dynamic(ctx, 25, 1);
-            nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);        
-        }
+        if (nk_begin(ctx, "Info", nk_rect(WINDOW_WIDTH - 300, 0, 300, WINDOW_HEIGHT), NK_WINDOW_TITLE))
+        {}
         nk_end(ctx);
 
 		render(&wi);
