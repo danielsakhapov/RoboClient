@@ -23,13 +23,19 @@
     #define NK_INCLUDE_FONT_BAKING
     #define NK_INCLUDE_DEFAULT_FONT
 
-    #define NK_SDL_GL2_IMPLEMENTATION
+    #include <GL/glew.h>
 
+    #define NK_SDL_GL2_IMPLEMENTATION
     #include <SDL2/SDL.h>
     #include <SDL2/SDL_opengl.h>
+ 
+
     #define NK_IMPLEMENTATION
     #include "nuklear.h"
     #include "nuklear_sdl_gl2.h"
+
+    #define STB_IMAGE_IMPLEMENTATION
+    #include "stb_image.h"
 #endif
 
 
@@ -92,6 +98,13 @@ void windowInitialization(struct Platform* wi, const char* title, int width, int
     wi->glContext = SDL_GL_CreateContext(wi->win);
     SDL_GetWindowSize(wi->win, &(wi->win_width), &(wi->win_height));
 
+    glViewport(0, 0, width, height);
+    glewExperimental = 1;
+    if (glewInit() != GLEW_OK) {
+        fprintf(stderr, "Failed to setup GLEW\n");
+        exit(1);
+    }
+
 #endif
 }
 
@@ -150,5 +163,36 @@ void shutdown(Platform* wi)
         SDL_GL_DeleteContext(wi->glContext);
         SDL_DestroyWindow(wi->win);
         SDL_Quit();
+    #endif
+}
+
+
+
+static struct nk_image loadImage(const char *filename)
+{
+    #if defined(WINDOWS)
+        return nk_gdip_load_image_from_file(filename);
+    #else
+        int x, y, n;
+        GLuint tex;
+
+        unsigned char *data = stbi_load(filename, &x, &y, &n, 0);
+        if (!data) 
+        {
+            fprintf(stdout, "[SDL]: failed to load image\n");
+            exit(1);
+        }
+
+        glGenTextures(1, &tex);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        stbi_image_free(data);
+        return nk_image_id((int)tex);
     #endif
 }

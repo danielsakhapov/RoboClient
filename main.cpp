@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 
 #include "includes/guiFunctions.h"
 
@@ -14,7 +16,10 @@ int main()
 
 	windowInitialization(&wi, "Client", WINDOW_WIDTH, WINDOW_HEIGHT);
 	ctx = ctxInitialization(&wi, WINDOW_WIDTH, WINDOW_HEIGHT);
-	loadDefaultFont(&wi);
+	loadDefaultFont(&wi);    
+
+    glEnable(GL_TEXTURE_2D);
+    struct nk_image stopSign = loadImage("../images/up.png");
 
 	while (running)
     {
@@ -36,7 +41,10 @@ int main()
         nk_end(ctx);
 
         if (nk_begin(ctx, "Info", nk_rect(WINDOW_WIDTH - 300, 0, 300, WINDOW_HEIGHT), NK_WINDOW_TITLE))
-        {}
+        {
+            nk_layout_row_static(ctx, 100, 100, 1);
+            nk_image(ctx, stopSign);
+        }
         nk_end(ctx);
 
 		render(&wi);
