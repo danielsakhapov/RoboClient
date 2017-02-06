@@ -19,7 +19,7 @@ int main()
 	loadDefaultFont(&wi);    
 
     glEnable(GL_TEXTURE_2D);
-    struct nk_image stopSign = loadImage("../images/up.png");
+    struct nk_image stopSign = loadImage("../up.png");
 
 	while (running)
     {

@@ -15,7 +15,7 @@ include_directories(
 	includes
 )
 
-add_executable(${PROJECT} ${SOURCES} ${LIBS})
+add_executable(${PROJECT} ${SOURCES})
 
 target_link_libraries(${PROJECT}
 	${SDL2_LIBRARIES}
