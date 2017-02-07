@@ -19,7 +19,14 @@ int main()
 	loadDefaultFont(&wi);    
 
     glEnable(GL_TEXTURE_2D);
-    struct nk_image stopSign = loadImage("../up.png");
+    struct nk_image bunny = loadImage("../images/bunny.jpeg");
+    struct nk_image stopSign = loadImage("../images/stop.jpeg");
+    struct nk_image giveWaySign = loadImage("../images/ustupi.jpg");
+    struct nk_image mainRoadSign = loadImage("../images/glavnaya.jpg");
+    struct nk_image crosswalkSign = loadImage("../images/crosswalk.jpeg");
+    struct nk_image greenLight = loadImage("../images/green_light.jpg");
+    struct nk_image yellowLight = loadImage("../images/yellow_light.jpg");
+    struct nk_image redLight = loadImage("../images/red_light.jpg");
 
 	while (running)
     {
@@ -37,13 +44,24 @@ int main()
 
         /* GUI */
         if (nk_begin(ctx, "Stream", nk_rect(0, 0, WINDOW_WIDTH - 300, WINDOW_HEIGHT), NK_WINDOW_TITLE))
-        {}
+        {
+            nk_layout_row_static(ctx, WINDOW_HEIGHT - 50, WINDOW_WIDTH - 322, 1);
+            nk_image(ctx, bunny);
+        }
         nk_end(ctx);
 
         if (nk_begin(ctx, "Info", nk_rect(WINDOW_WIDTH - 300, 0, 300, WINDOW_HEIGHT), NK_WINDOW_TITLE))
         {
             nk_layout_row_static(ctx, 100, 100, 1);
             nk_image(ctx, stopSign);
+            nk_layout_row_static(ctx, 100, 100, 1);
+            nk_image(ctx, giveWaySign);
+            nk_layout_row_static(ctx, 100, 100, 1);
+            nk_image(ctx, mainRoadSign);
+            nk_layout_row_static(ctx, 100, 100, 1);
+            nk_image(ctx, crosswalkSign);
+            nk_layout_row_static(ctx, 100, 100, 1);
+            nk_image(ctx, redLight);
         }
         nk_end(ctx);
 

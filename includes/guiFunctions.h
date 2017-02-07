@@ -176,7 +176,7 @@ static struct nk_image loadImage(const char *filename)
         int x, y, n;
         GLuint tex;
 
-        unsigned char *data = stbi_load(filename, &x, &y, &n, 0);
+        unsigned char *data = stbi_load(filename, &x, &y, &n, 4);
         if (!data) 
         {
             fprintf(stdout, "[SDL]: failed to load image\n");
