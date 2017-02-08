@@ -1,3 +1,8 @@
+// guiFunctions.h
+
+#define WINDOW_HEIGHT 720
+#define WINDOW_WIDTH  1280
+
 #define MAX_VERTEX_MEMORY 512 * 1024
 #define MAX_ELEMENT_MEMORY 128 * 1024
 
@@ -168,7 +173,7 @@ void shutdown(Platform* wi)
 
 
 
-static struct nk_image loadImage(const char *filename)
+static struct nk_image loadImageFromFile(const char *filename)
 {
     #if defined(WINDOWS)
         return nk_gdip_load_image_from_file(filename);
@@ -177,6 +182,37 @@ static struct nk_image loadImage(const char *filename)
         GLuint tex;
 
         unsigned char *data = stbi_load(filename, &x, &y, &n, 4);
+        if (!data) 
+        {
+            fprintf(stdout, "[SDL]: failed to load image\n");
+            exit(1);
+        }
+
+        glGenTextures(1, &tex);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        stbi_image_free(data);
+        return nk_image_id((int)tex);
+    #endif
+}
+
+
+
+static struct nk_image loadImageFromMemory(const unsigned char* buf, int bufSize)
+{
+    #if defined(WINDOWS)
+        return nk_gdip_load_image_from_memory(buf, bufSize);
+    #else
+        int x, y, n;
+        GLuint tex;
+        
+        unsigned char *data = stbi_load_from_memory(buf, bufSize, &x, &y, &n, 4);
         if (!data) 
         {
             fprintf(stdout, "[SDL]: failed to load image\n");

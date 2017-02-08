@@ -3,6 +3,15 @@ cmake_minimum_required (VERSION 2.8)
 set(PROJECT Client)
 project (${PROJECT})
 
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+# 	add_definitions(-g)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+endif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+
+aux_source_directory(includes/GUI SOURCES)
+aux_source_directory(includes/Client SOURCES)
+
 set(SOURCES ${SOURCES}
 	main.cpp
 )
@@ -10,10 +19,6 @@ set(SOURCES ${SOURCES}
 find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
-
-include_directories(
-	includes
-)
 
 add_executable(${PROJECT} ${SOURCES})
 
